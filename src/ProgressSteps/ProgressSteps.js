@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { View } from 'react-native';
-import { times } from 'lodash';
+import React, { Component } from "react";
+import { View } from "react-native";
+import { times } from "lodash";
 
-import StepIcon from './StepIcon';
+import StepIcon from "./StepIcon";
 
 class ProgressSteps extends Component {
   state = {
@@ -31,8 +31,18 @@ class ProgressSteps extends Component {
               label={this.props.children[i].props.label}
               isFirstStep={i === 0}
               isLastStep={i === this.state.stepCount - 1}
-              isCompletedStep={i < this.state.activeStep}
-              isActiveStep={i === this.state.activeStep}
+              isCompletedStep={
+                i <
+                (this.props.externalControl
+                  ? this.props.activeStep
+                  : this.state.activeStep)
+              }
+              isActiveStep={
+                i ===
+                (this.props.externalControl
+                  ? this.props.activeStep
+                  : this.state.activeStep)
+              }
             />
           </View>
         </View>
@@ -52,10 +62,10 @@ class ProgressSteps extends Component {
   render() {
     const styles = {
       stepIcons: {
-        position: 'relative',
-        justifyContent: 'space-evenly',
-        alignSelf: 'center',
-        flexDirection: 'row',
+        position: "relative",
+        justifyContent: "space-evenly",
+        alignSelf: "center",
+        flexDirection: "row",
         top: 30,
         marginBottom: 50
       }
@@ -65,11 +75,20 @@ class ProgressSteps extends Component {
       <View style={{ flex: 1 }}>
         <View style={styles.stepIcons}>{this.renderStepIcons()}</View>
         <View style={{ flex: 1 }}>
-          {React.cloneElement(this.props.children[this.state.activeStep], {
-            setActiveStep: this.setActiveStep,
-            activeStep: this.state.activeStep,
-            stepCount: this.state.stepCount
-          })}
+          {React.cloneElement(
+            this.props.children[
+              this.props.externalControl
+                ? this.props.activeStep
+                : this.state.activeStep
+            ],
+            {
+              setActiveStep: this.setActiveStep,
+              activeStep: this.props.externalControl
+                ? this.props.activeStep
+                : this.state.activeStep,
+              stepCount: this.state.stepCount
+            }
+          )}
         </View>
       </View>
     );
